@@ -1,21 +1,16 @@
-const CACHE = "debt-planner-v1";
+const CACHE="planner-v1";
 
-const ASSETS = [
-  "./",
-  "./index.html",
-  "manifest.json",
-  "service-worker.js",
-  "https://cdn.jsdelivr.net/npm/chart.js"
-];
-
-self.addEventListener("install", e => {
+self.addEventListener("install",e=>{
   e.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE).then(c=>c.addAll([
+      "./",
+      "./index.html"
+    ]))
   );
 });
 
-self.addEventListener("fetch", e => {
+self.addEventListener("fetch",e=>{
   e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
+    caches.match(e.request).then(r=>r||fetch(e.request))
   );
 });
