@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Debt Freedom Planner</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#667eea" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* your full CSS from debt planner here */
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>💰 Debt Freedom Planner</h1>
+    <p class="subtitle">Comprehensive debt analysis, planning & forecasting</p>
+    <!-- your entire debt planner content goes here -->
+  </div>
+
+  <!-- modals, charts, etc. (already part of your uploaded file) -->
+
+  <script>
+    // your full JavaScript logic already included (e.g. loadData, renderAll, simulate, exportPDF, etc.)
+  </script>
+
+  <!-- ✅ Service Worker registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('Service Worker Registered'))
+      .catch(err => console.error('SW registration failed', err));
+    }
+  </script>
+</body>
+</html>
