@@ -1,38 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Debt Freedom Planner</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#667eea" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Debt Freedom Planner</title>
 
-  <style>
-    /* your full CSS from debt planner here */
-  </style>
+<!-- ✅ PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#667eea">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{font-family:system-ui;background:#0f0f1a;color:white;margin:0;padding:20px}
+button{padding:10px 14px;border-radius:8px;border:none;background:#667eea;color:white;cursor:pointer}
+.card{background:#1a1a2e;padding:20px;border-radius:12px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse}
+td,th{padding:8px;border-bottom:1px solid #333}
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>💰 Debt Freedom Planner</h1>
-    <p class="subtitle">Comprehensive debt analysis, planning & forecasting</p>
-    <!-- your entire debt planner content goes here -->
-  </div>
 
-  <!-- modals, charts, etc. (already part of your uploaded file) -->
+<h1>💰 Debt Freedom Planner</h1>
 
-  <script>
-    // your full JavaScript logic already included (e.g. loadData, renderAll, simulate, exportPDF, etc.)
-  </script>
+<div class="card">
+<button onclick="loadPresetData()">Load Demo Debts</button>
+<button onclick="clearAllData()">Reset</button>
+</div>
 
-  <!-- ✅ Service Worker registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-      .then(() => console.log('Service Worker Registered'))
-      .catch(err => console.error('SW registration failed', err));
+<div class="card">
+<h3>Total Debt</h3>
+<div id="totalDebt"></div>
+</div>
+
+<div class="card">
+<canvas id="chart"></canvas>
+</div>
+
+<script>
+/* =============================
+   SAFE STORAGE + AUTO LOAD
+============================= */
+
+const STORAGE="debtPlannerV2";
+let data;
+
+function safeLoad(){
+  try{
+    const raw=localStorage.getItem(STORAGE);
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch{
+    return null;
+  }
+}
+
+function save(){localStorage.setItem(STORAGE,JSON.stringify(data));}
+
+function init(){
+  data=safeLoad();
+
+  if(!data || !data.debts){
+    loadPresetData(true);
+  }else{
+    render();
+  }
+}
+
+/* =============================
+   DEMO DATA
+============================= */
+
+function loadPresetData(firstRun=false){
+  data={
+    debts:[
+      {name:"Credit Card",balance:7200,rate:24},
+      {name:"Car Loan",balance:12000,rate:6},
+      {name:"Student Loan",balance:30000,rate:5}
+    ]
+  };
+  save();
+  render();
+  if(!firstRun) alert("Demo data loaded!");
+}
+
+/* =============================
+   RENDER
+============================= */
+
+let chart;
+
+function render(){
+  const total=data.debts.reduce((s,d)=>s+d.balance,0);
+  document.getElementById("totalDebt").textContent="$"+total.toLocaleString();
+
+  const ctx=document.getElementById("chart");
+
+  if(chart) chart.destroy();
+
+  chart=new Chart(ctx,{
+    type:"doughnut",
+    data:{
+      labels:data.debts.map(d=>d.name),
+      datasets:[{data:data.debts.map(d=>d.balance)}]
     }
-  </script>
+  });
+}
+
+/* =============================
+   RESET
+============================= */
+
+function clearAllData(){
+  localStorage.removeItem(STORAGE);
+  location.reload();
+}
+
+/* =============================
+   START
+============================= */
+
+init();
+
+/* =============================
+   SERVICE WORKER
+============================= */
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+
 </body>
 </html>
+
